@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Station</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+           <div class="logo-icon">
+                <img src="images/logo.png" alt="Logo">
+            </div>
+            <h1 class="title">Weather Station Dashboard</h1>
+            <div class="settings-icon" onclick="toggleSettings()">
+                <img src="images/settings.png" alt="Settings Icon">
+            </div>
+        </div>
+        <form id="settings-form" class="settings-form" action="#" th:action="@{/weather-api/updateSettings}" method="post">
+            <div class="settings-input-container">
+                <p class="settings-label">Email</p>
+                <input type="email" id="email" name="newEmail" class="settings-input" th:value="${email}">
+            </div>
+            <div class="settings-input-container">
+                <p class="settings-label">Temperature Threshold</p>
+                <input type="number" id="temperatureThreshold" name="newTemperatureThreshold" class="settings-input"
+                    th:value="${temperatureThreshold}">
+            </div>
+            <div class="settings-input-container">
+                <p class="settings-label">Humidity Threshold</p>
+                <input type="number" id="humidityThreshold" name="newHumidityThreshold" class="settings-input" th:value="${humidityThreshold}">
+            </div>
+            <div class="settings-input-container">
+                <p class="settings-label">Pressure Threshold</p>
+                <input type="number" id="pressureThreshold" name="newPressureThreshold" class="settings-input" th:value="${pressureThreshold}">
+            </div>
+            <div class="settings-input-container">
+                <p class="settings-label">Altitude Threshold</p>
+                <input type="number" id="altitudeThreshold" name="newAltitudeThreshold" class="settings-input" th:value="${altitudeThreshold}">
+            </div>
+            <button type="submit" class="settings-btn">Update Settings</button>
+        </form>
+    </header>
+
+
+    <section>
+        <h3>Last Update: <span th:text="${latestSensorData.timestamp}"></span></h3>
+        <div class="sensor-box">
+            <p class="sensor">
+                <img src="images/temperature.png" alt="Temperature Image">Temperature:<span
+                    th:text="${latestSensorData.temperature}"></span> &nbsp; °C
+            </p>
+            <p class="sensor">
+                <img src="images/humidity.png" alt="Humidity Image">Humidity:<span th:text="${latestSensorData.humidity}"></span> &nbsp; %
+            </p>
+            <p class="sensor">
+                <img src="images/altitude.png" alt="Altitude Image">Altitude:<span th:text="${latestSensorData.altitude}"></span> &nbsp; m
+            </p>
+            <p class="sensor">
+                <img src="images/pressure.png" alt="Pressure Image">Pressure:<span th:text="${latestSensorData.pressure}"></span> &nbsp; Pa
+            </p>
+        </div>
+    </section>
+
+    <section>
+        <div class="alerts-container">
+            <p class="alert" th:if="${latestSensorData.temperature} > ${temperatureThreshold}">Temperature is above the threshold!</p>
+            <p class="alert" th:if="${latestSensorData.humidity} > ${humidityThreshold}">Humidity is above the threshold!</p>
+            <p class="alert" th:if="${latestSensorData.pressure} > ${pressureThreshold}">Pressure is above the threshold!</p>
+            <p class="alert" th:if="${latestSensorData.altitude} > ${altitudeThreshold}">Altitude is above the threshold!</p>
+        </div>
+    </section>
+    
+    <section>
+        <button onclick="toggleLogs()" class="logs-btn">Show/Hide Logs</button>
+        <!-- Logs container -->
+        <div id="logs-container" class="logs-container">
+            <h2>Logs</h2>
+            <ul th:each="log : ${logs}">
+                <li
+                    th:text="'Timestamp: ' + ${log.timestamp} + ' | Temperature: ' + ${log.temperature} + '°C | Humidity: ' + ${log.humidity} + '% | Pressure: ' + ${log.pressure} + 'Pa | Altitude: ' + ${log.altitude} + 'm'">
+                </li>
+            </ul>
+        </div>
+    </section>
+    </body>
+</html>
